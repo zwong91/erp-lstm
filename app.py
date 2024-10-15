@@ -29,7 +29,7 @@ class Attention(Layer):
         return output
 
 # 加载预训练的Keras LSTM模型
-model = load_model(f'models/best_erp_lstm_model_20241015_1613.keras', custom_objects={'Attention': Attention})
+model = load_model(f'models/best_erp_lstm_model_20241015_1810.keras', custom_objects={'Attention': Attention})
 
 # 定义预测路由
 @app.route('/predict', methods=['POST'])
@@ -38,9 +38,9 @@ def predict():
     data = request.get_json(force=True)
     input_data = np.array(data['input']).astype(np.float32)
 
-    # 确保输入数据形状为 (1, 7, 6)
-    if input_data.shape != (1, 7, 6):
-        return jsonify({'error': 'Invalid input shape, expected (1, 7, 6)'}), 400
+    # 确保输入数据形状为 (1, 7, 18)
+    if input_data.shape != (1, 7, 18):
+        return jsonify({'error': 'Invalid input shape, expected (1, 7, 18)'}), 400
 
     # 进行预测
     prediction = model.predict(input_data)
