@@ -132,7 +132,7 @@ def price():
 def create_plot():
     now = datetime.now()
     current_time = now.strftime("%H:%M")
-    print(current_time)
+    print("current_time: ", current_time)
     if current_time=="09:00" or current_time=="09:03":
         print("true")
         if os.path.exists("result.csv"):
@@ -140,8 +140,8 @@ def create_plot():
         price()
 
     df2 = pd.read_csv("result.csv")
-    fig = px.line(df2, y='prices',
-              title='price prediction',template="plotly_dark")
+    fig = px.line(df2, y='sales',
+              title='trends prediction',template="plotly_dark")
     fig.update_xaxes(rangeslider_visible=True)
     fig.update_layout(width=1100, height=450)
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
@@ -275,11 +275,100 @@ def news():
     return render_template('news.html', news_articles=news_articles)
 
 
-@app.route('/rediction')
+@app.route('/prediction')
 def price_prediction():
     plot = create_plot()
-    price_data = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false').json()
-    return render_template('price.html', plot=plot,price_data=price_data)
+    json_data = '''
+    [
+        {
+            "id": "blender123",
+            "symbol": "bl123",
+            "name": "Blender Pro",
+            "image": "https://example.com/images/blender.png",
+            "current_price": 129.99,
+            "market_cap": 3520000,
+            "market_cap_rank": 1,
+            "fully_diluted_valuation": 5000000,
+            "total_volume": 15800,
+            "high_24h": 135.50,
+            "low_24h": 125.00,
+            "price_change_24h": -3.20,
+            "price_change_percentage_24h": -2.40,
+            "market_cap_change_24h": -85000,
+            "market_cap_change_percentage_24h": -2.36,
+            "circulating_supply": 27000,
+            "total_supply": 30000,
+            "max_supply": 30000,
+            "ath": 150.00,
+            "ath_change_percentage": -13.33,
+            "ath_date": "2024-02-15T09:30:00.000Z",
+            "atl": 79.99,
+            "atl_change_percentage": 62.50,
+            "atl_date": "2023-08-10T07:20:00.000Z",
+            "roi": null,
+            "last_updated": "2024-10-16T06:25:41.652Z"
+        },
+        {
+            "id": "vacuum456",
+            "symbol": "vac456",
+            "name": "Vacuum Master",
+            "image": "https://example.com/images/vacuum.png",
+            "current_price": 259.99,
+            "market_cap": 6780000,
+            "market_cap_rank": 2,
+            "fully_diluted_valuation": 8500000,
+            "total_volume": 27000,
+            "high_24h": 265.00,
+            "low_24h": 245.00,
+            "price_change_24h": 5.50,
+            "price_change_percentage_24h": 2.16,
+            "market_cap_change_24h": 120000,
+            "market_cap_change_percentage_24h": 1.80,
+            "circulating_supply": 35000,
+            "total_supply": 40000,
+            "max_supply": 40000,
+            "ath": 280.00,
+            "ath_change_percentage": -7.14,
+            "ath_date": "2023-12-25T10:00:00.000Z",
+            "atl": 199.99,
+            "atl_change_percentage": 30.00,
+            "atl_date": "2023-07-20T08:00:00.000Z",
+            "roi": null,
+            "last_updated": "2024-10-16T06:25:41.652Z"
+        },
+        {
+            "id": "airfryer789",
+            "symbol": "af789",
+            "name": "Air Fryer Turbo",
+            "image": "https://example.com/images/airfryer.png",
+            "current_price": 89.99,
+            "market_cap": 2135000,
+            "market_cap_rank": 3,
+            "fully_diluted_valuation": 2500000,
+            "total_volume": 12000,
+            "high_24h": 95.00,
+            "low_24h": 85.00,
+            "price_change_24h": -1.50,
+            "price_change_percentage_24h": -1.64,
+            "market_cap_change_24h": -32000,
+            "market_cap_change_percentage_24h": -1.48,
+            "circulating_supply": 24000,
+            "total_supply": 26000,
+            "max_supply": 26000,
+            "ath": 100.00,
+            "ath_change_percentage": -10.00,
+            "ath_date": "2024-01-10T11:45:00.000Z",
+            "atl": 49.99,
+            "atl_change_percentage": 80.00,
+            "atl_date": "2023-09-05T07:15:00.000Z",
+            "roi": null,
+            "last_updated": "2024-10-16T06:25:41.652Z"
+        }
+        ]
+    '''
+    # 将JSON字符串加载为Python对象
+    price_data = json.loads(json_data)
+    return render_template('trends.html', plot=plot,price_data=price_data)
 
 
 # 定义预测路由

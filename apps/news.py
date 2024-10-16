@@ -6,7 +6,6 @@ def get_latest_news():
     return news_data['results']
 
 
-
 print(get_latest_news())
 
 
